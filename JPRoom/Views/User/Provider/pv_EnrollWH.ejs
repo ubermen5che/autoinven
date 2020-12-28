@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <%- include('../../head')  %>
+    <title></title>
+  </head>
+  <body>
+    <div id="content">
+      <%- include('../../nav_Bar') %>
+      <div class="page-header page-header-small">
+        <div class="page-header-image" data-parallax="true" style="background-image: url('../../../Image/about_WH.jpg');"></div>
+        <div class="content-center">
+          <div class="container">
+            <h1 class="title">This is our great company.</h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <form action="/Provider/EnrollWH" method="post" enctype="multipart/form-data" >
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Warehouse ID</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="warehouseID" name="warehouseID"value="창고등록번호입력"></div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Warehouse Name</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="warehouseName"  name="warehouseName"value="warehouseName"></div>
+          </div>
+          <div class="form-group row">
+            <input type="button" onclick="sample4_execDaumPostcode()" value="Find address"><br>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Warehouse Address</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="address" name="address" value="Address"></div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">landArea</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="landArea" name="landArea" value="숫자만 입력"></div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">floorArea</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="floorArea" name="floorArea" value="숫자만 입력"></div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Price per area</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="price" name="price" value="ex)(단위 100000)"></div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">infoComment</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="infoComment" name="infoComment" value="infoComment"></div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">etcComment</label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="etcComment" name="etcComment" value="etcComment"></div>
+          </div>
+
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="lat" name="lat"></div>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10"><input type="text" class="form-control" id="lng" name="lng"></div>
+          </div>
+          <div class="form-group row">
+            <input type='file' id='profile_img' name='profile_img' accept='image/jpg, image/png, image/jpeg' />
+          </div>
+
+          <div class="button">
+            <input type="submit" value = "Submit">
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+    <div class="overlay"></div>
+  </body>
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+  <script>
+    function sample4_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                var roadAddr = data.roadAddress;
+
+                // document.getElementById("address").value = roadAddr;
+                document.getElementById("address").value = data.roadAddressEnglish;
+                var baseAPIUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
+                baseAPIUrl = baseAPIUrl + roadAddr + "&key=" + "AIzaSyDXD3teedceIe-mMxLE9ZTUbcG237OEc4k"
+                $.ajax({
+                  url: baseAPIUrl,
+                  type: "GET",
+                  success: function(data) {
+                            document.getElementById("lat").value = data.results[0].geometry.location.lat;
+                            document.getElementById("lng").value = data.results[0].geometry.location.lng;
+                  }
+                });
+            }
+        }).open();
+    }
+  </script>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <%- include('../../head')  %>
+    <title></title>
+    <style media="screen">
+      .card-header {
+        font-size : 25px
+      }
+      .page-link {
+        font-size : 20px !important
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+        <%- include('../../nav_Bar') %>
+        <div class="page-header page-header-small">
+          <div class="page-header-image" data-parallax="true" style="background-image: url('../../../Image/about_WH.jpg');"></div>
+          <div class="content-center">
+            <div class="container">
+              <h1 class="title">This is our great company.</h1>
+            </div>
+          </div>
+        </div>
+        <div class="container">
+          <div class="jumbotron" style = "text-align : center">
+            <h1>RequestEnroll list</h1>
+          </div>
+          <div class="container mb-3">
+
+            <h2 class="mb-3">Submit lists</h2>
+            <% for(var i=0; i < Object.keys(items).length; i++) { %>
+              <p id = "whID<%=i%>" style="display: none"><%= items['item'+i].warehouseID %></p>
+              <p id = "reqID<%=i%>" style="display: none"><%= items['item'+i].reqID%></p>
+              <p id = "reqType<%=i%>" style="display: none"><%= items['item'+i].reqType%></p>
+              <p id = "providerID<%=i%>" style="display: none"><%= items['item'+i].providerID%></p>
+            <%}%>
+            <table class="board-table table ">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Title</th>
+                  <th>State</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(var i=0; i < Object.keys(items).length; i++) { %>
+                   <% if(items['item'+i].reqType == "ReqEnrollPV"){ %>
+                     <tr class="table-warning">
+                       <td><%= items['item'+i].warehouseID %></td>
+                       <td>Pending approval</td>
+                       <td style="float:right; padding:0px 10px 0px 0px;">
+                         <button type="button" class="btn btn-sm" onclick="adClick(<%=i%>, 1)">Approval</button>
+                         <button type="button" class="btn btn-sm" onclick="adClick(<%=i%>, 0)">Cancel</button>
+                       </td>
+                     </tr>
+                   <% } %>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+    <div class="overlay"></div>
+  </body>
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+  <script>
+    function adClick(i, flag) {
+      if(flag){ // flag == 1 -> Approve
+        $.ajax({
+              url: '/Admin/RequestEnroll',
+              dataType: 'json',
+              type: 'POST',
+              data: {
+                answer: "Approve",
+                providerID: document.getElementById('providerID'+i).innerText,
+                reqType: document.getElementById('reqType'+i).innerText,
+                warehouseID: parseInt(document.getElementById('whID'+i).innerText),
+                reqID: parseInt(document.getElementById("reqID"+i).innerText)
+              },
+              success:function(data){
+                if(data==true){
+                  alert("승인하였습니다.");
+                  window.location.href = "/Admin/RequestEnroll";
+                }
+                else{
+                  alert("에러가 발생했습니다.");
+                  window.location.href = "/Admin/RequestEnroll";
+                }
+              }
+          });
+      }else { // flag == 0 -> Reject
+        $.ajax({
+              url: '/Admin/RequestEnroll',
+              dataType: 'json',
+              type: 'POST',
+              data: {answer: "Reject", reqID: document.getElementById('whID'+i).innerText},
+              success:function(data){
+                if(data==true){
+                  alert("거절하였습니다.");
+                  window.location.href = "/Admin/RequestEnroll";
+                }
+                else{
+                  alert("에러가 발생했습니다.");
+                  window.location.href = "/Admin/RequestEnroll";
+                }
+              }
+          });
+      }
+    }
+  </script>
+</html>

@@ -1,0 +1,35 @@
+{
+  "name": "JPRoom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webserver.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KNU-JPRoom/JPRoom.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KNU-JPRoom/JPRoom/issues"
+  },
+  "homepage": "https://github.com/KNU-JPRoom/JPRoom#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.0",
+    "express-session": "^1.17.1",
+    "formidable": "^1.2.2",
+    "fs": "0.0.1-security",
+    "mysql": "^2.18.1",
+    "net": "^1.0.2",
+    "nodemailer": "^6.4.13",
+    "paypal-rest-sdk": "^1.8.1",
+    "pickle": "^0.2.0",
+    "sync-mysql": "^3.0.1"
+  }
+}
