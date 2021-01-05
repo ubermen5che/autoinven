@@ -24,7 +24,6 @@ exports.findWH = function (req, res,app,db) {
         }
     }
     items +="}";
-    console.log(items);
     return items;
 }
 
@@ -89,7 +88,7 @@ exports.RequestWH = function(req,res,app,db){
     reqno = reqResult[0].reqID+1;
     if(logResult.length>0)
     logno = logResult[0].logID+1;
-    
+
     var reqBuy = {
         "reqID": reqno,
         "reqDate": CURRENT_TIMESTAMP(),

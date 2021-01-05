@@ -15,8 +15,8 @@ module.exports = function(app,db){
     router.post('/EnrollWH',function(req,res,next){
         let upLoadFile = req.files
         const fileName = req.files.profile_img.name ;
-        console.log(upLoadFile);
-        console.log(fileName);
+//        console.log(upLoadFile);
+//        console.log(fileName);
         upLoadFile.profile_img.mv(
             `./Public/Upload/${fileName}`,
             function(err){
