@@ -27,6 +27,7 @@
     "fs": "0.0.1-security",
     "mysql": "^2.18.1",
     "net": "^1.0.2",
+    "node-pickle": "0.0.2",
     "nodemailer": "^6.4.13",
     "paypal-rest-sdk": "^1.8.1",
     "pickle": "^0.2.0",
