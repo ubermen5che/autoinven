@@ -1,10 +1,12 @@
 exports.RequestForBuy = function (req, res,app,db) {
   var items="{";
-  var sql = `select * from RequestForBuy where buyerID='`+req.session['memberID']+"'";
+  var sql = `select * from RequestForBuy, Warehouse where Warehouse.warehouseID=RequestForBuy.warehouseID and buyerID='`+req.session['memberID']+"'";
   let results = db.query(sql);
+  console.log(results);
   if(results.length > 0) {
       var step;
       for(step =0;step<results.length;step++){
+          results[step].price = results[step].price * results[step].area;
           items+= ("\"item"+step+"\":");
           var obj="{"+
               "\"reqID\" :"+ results[step].reqID+","+
@@ -12,13 +14,15 @@ exports.RequestForBuy = function (req, res,app,db) {
               "\"reqType\" :\"" + results[step].reqType+"\","+
               "\"warehouseID\" :"+ results[step].warehouseID +","+
               "\"buyerID\" :\""+ results[step].buyerID+"\","+
-              "\"area\" :"+ results[step].area+""+
+              "\"area\" :"+ results[step].area+","+
+              "\"amounts\" :"+ results[step].price+""+
           "}";
           items+=obj;
           if(step+1<results.length)items+=","
       }
   }
   items +="}";
+  console.log(items);
   return items;
 }
 
@@ -50,11 +54,12 @@ exports.Mywarehouse = function(req,res,app,db){
               "\"etcComment\" :\""+ results[step].etcComment+"\""+
           "}";
           items+=obj;
+
           if(step+1<results.length)items+=","
       }
   }
   items +="}";
-  console.log(items)
+//  console.log(items);
   return items;
 }
 
@@ -64,7 +69,7 @@ exports.ReqBuyWithAnswer = function(req,res,app,db){
   var answer = req.body.answer;
   var mysql = require('mysql');
   var connection = mysql.createConnection(require('../Module/db').info);
-  const nodePickle= require('pickle');
+  const nodePickle = require('pickle');
   connection.connect();
   if(answer=="Cancel"){
       connection.query(`UPDATE RequestForBuy SET reqType='RejByBuyer' WHERE reqID =${reqID}`,function (error, results, fields){
@@ -88,6 +93,9 @@ exports.ReqBuyWithAnswer = function(req,res,app,db){
   }
   else if(answer=="Accept"){
     if(reqType=="ReqPayByBuyer"){
+      var sql = `SELECT price FROM Warehouse WHERE warehouseID='`+req.body.whID+"'";
+      let price = db.query(sql);
+//      console.log(price[0].price);
       connection.query(`UPDATE RequestForBuy SET reqType='ReqPayAcpt' WHERE reqID =${reqID}`,function (error, results, fields) {
           if(error){
             console.log(error);
@@ -114,7 +122,7 @@ exports.ReqBuyWithAnswer = function(req,res,app,db){
                   let result = db.query('select * from Contract ORDER BY contractID DESC');
                   var conno = 1;
                   if(result.length>0)
-                   conno = result[0].contractID+1;
+                   conno = result[0].contractID+1;                  //2020-12-29  거래ID 동적 처리.
                   var contract = {
                       contractID : conno,
                       buyerID : info['memberID'],
@@ -122,7 +130,7 @@ exports.ReqBuyWithAnswer = function(req,res,app,db){
                       startDate : sDate,
                       endDate : eDate,
                       area : info['area'],
-                      price : 8,
+                      price : price[0].price * info['area'],                                    //추후 변경필요, 현재 8로 고정된 가격만 가능. -2020-12-19- 수정완료
                       logID : 1
                   };
                   connection.query(`INSERT INTO Contract SET ?`,contract,function (error, results, fields) {
