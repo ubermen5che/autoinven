@@ -2,8 +2,8 @@ const mysql = require('sync-mysql');
 var db_info = {
     host : 'localhost',
     user : 'root',
-    password : 'password',
-    database : 'jpdatabase',
+    password : 'root',
+    database : 'autoinven',
 };
 
 module.exports = {
