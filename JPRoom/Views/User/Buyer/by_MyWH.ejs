@@ -5,7 +5,6 @@
     <title></title>
   </head>
   <body>
-    <div id="content">
       <%- include('../../nav_Bar') %>
       <div class="page-header page-header-small">
         <div class="page-header-image" data-parallax="true" style="background-image: url('../../../Image/about_WH.jpg');"></div>
@@ -19,6 +18,8 @@
 
         <div class="container mb-3">
           <h2 class="mb-3">Submit lists</h2>
+          <p id = "totalMoney" style="display: none">0</p>
+          <p id = "payFlag" style="display: none">F</p>
           <% for(var i=0; i < Object.keys(items).length; i++) { %>
             <p id = "whID<%=i%>" style="display: none"><%= items['item'+i].warehouseID %></p>
             <p id = "reqID<%=i%>" style="display: none"><%= items['item'+i].reqID%></p>
@@ -26,163 +27,222 @@
             <p id = "buyerID<%=i%>" style="display: none"><%= items['item'+i].buyerID%></p>
             <p id = "area<%=i%>" style="display: none"><%= items['item'+i].area%></p>
           <%}%>
-          <table class="board-table table ">
+          <table id = "t1" class="board-table table">
             <thead class="thead-dark">
               <tr>
-                <th>Title</th>
-                <th>State</th>
+                <th>warehouseID</th>
+                <th>Status</th>
+                <th>Total amount</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               <% for(var i=0; i < Object.keys(items).length; i++) { %>
                 <% if(items['item'+i].reqType == "ReqByBuyer" || items['item'+i].reqType == "ReqByAdmin"){ %>
-                   <tr class="table-warning">
-                    <td><%= items['item'+i].warehouseID %></td>
-                     <td>Pending approval</td>
-                     <td style="float:right; padding:0px 10px 0px 0px;">
-                      <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 0)">Cancel</button>
-                     </td>
-                   </tr>
-                 <% } %>
-                 <% if(items['item'+i].reqType == "ReqPayByBuyer"){ %>
-                   <tr class="table-primary">
-                    <td><%= items['item'+i].warehouseID %></td>
-                     <td>Waiting for payment</td>
-                     <td style="float:right; padding:0px 10px 0px 0px;">
-                      <paypal><script src="https://www.paypal.com/sdk/js?client-id=AX9DHIhQNLGR2SU10U4yxGWt3js_jloq6e_l3WQPiy_YhAQV8Hy4UqTUYshl8eJDSo-oMVNhJGoRC-_i"></script>
-                        <script>
-                          
-                          paypal.Buttons({
-
-                              createOrder:function(data,actions){
-                                return actions.order.create({
-                                  purchase_units:[{
-                                    amount:{
-                                          currency : "USD",
-                                          value: 8
-                                      }
-                                  }]
-                                });
-                              },
-
-                              onApprove: function(data,actions){
-                                return actions.order.capture().then(function(details){
-                                  byClick(<%=i%>, 1)
-                                });
-                              }
-                          }).render('paypal');
-                          </script></paypal>
-                      <!-- <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 1)">Pay</button> -->
-                      <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 0)">Cancel</button>
-                     </td>
-                   </tr>
-                 <% } %>
-                 <% if(items['item'+i].reqType == "ReqPayAcpt"){ %>
-                   <tr class="table-success">
-                    <td><%= items['item'+i].warehouseID %></td>
-                     <td>Approved</td>
-                     <td></td>
-                   </tr>
-                 <% } %>
-                 <% if(items['item'+i].reqType == "Rejected"){ %>
-                   <tr class="table-danger">
-                    <td><%= items['item'+i].warehouseID %></td>
-                     <td>Rejected</td>
-                     <td style="float:right; padding:0px 10px 0px 0px;">
-                      <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 2)">Confirm</button>
-                     </td>
-                   </tr>
-                 <% } %>
+                  <tr class="table-warning">
+                   <td><%= items['item'+i].warehouseID %></td>
+                    <td>Pending approval</td>
+                    <td id = "amounts<%=i%>" ><%= items['item'+i].amounts%></td>
+                    <td style="float:right; padding:0px 10px 0px 0px;">
+                     <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 0)">Cancel</button>
+                    </td>
+                  </tr>
+             <% } %>
+<!--             <% if(items['item'+i].reqType == "ReqPayAcpt"){ %>
+             <table class = "border-table table ">
+               <thead class="thead-dark">
+                       <tr class="table-success">
+                         <th>warehouseID</th>
+                         <th>status</th>
+                       </tr>
+               </thead>
+               <tbody>
+                        <tr class="table-success">
+                          <td><%= items['item'+i].warehouseID %></td>
+                          <td>Approved</td>
+                        </tr>
+               </tbody>
+             </table>
+             <% } %>
+             <table>
+               <% if(items['item'+i].reqType == "Rejected"){ %>
+                 <tr class="table-danger">
+                  <td><%= items['item'+i].warehouseID %></td>
+                   <td>Rejected</td>
+                   <td style="float:right; padding:0px 10px 0px 0px;">
+                    <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 2)">Confirm</button>
+                   </td>
+                 </tr>
+               <% } %> -->
+             <% } %>
+             </table>
+             </tbody>
+           </table>
+          <table id = "t2" class="board-table table">
+           <thead class="thead-dark">
+            <tr>
+              <th>Check list</th>
+              <th>warehouseID</th>
+              <th>status</th>
+              <th>Total amounts</th>
+              <th></th>
+            </tr>
+           </thead>
+           <tbody>
+             <% for(var i=0; i < Object.keys(items).length; i++) { %>
+               <% if(items['item'+i].reqType == "ReqPayByBuyer"){ %>
+                 <script>
+                     document.getElementById('payFlag').innerText = 'T';
+                 </script>
+                 <p id = "count" style="display: none"><%=i%></p>
+                 <p id = "reqType<%=i%>" style="display: none"><%= items['item'+i].reqType%></p>
+                 <tr class="table-primary">
+                  <td>
+                    <input type="checkbox" name="paymentCheck" value="<%= items['item'+i].amounts%>" onclick='getCheckboxValue(event)'/>
+                  </td>
+                  <td><%= items['item'+i].warehouseID %></td>
+                  <td>Waiting for payment</td>
+                  <td id = "amounts<%=i%>" ><%= items['item'+i].amounts%></td>
+                  <td style="float:right; padding:0px 7px 0px 0px;">
+                    <!-- <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 1)">Pay</button> -->
+                    <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 0)">Cancel</button>
+                  </td>
+                 </tr>
               <% } %>
-            </tbody>
+            <% } %>
+           </tbody>
           </table>
+              <div id="smart-button-container">
+              <div style="text-align: center;">
+                <div id="paypal-button-container"></div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="overlay"></div>
-  </body>
-  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-  <script>
-    function byClick(i, flag) {
-      switch (flag) {
-        case 0: // Cancel
-          $.ajax({
-            url: '/MyWarehouse/Buy/Ans',
-            dataType: 'json',
-            type: 'POST',
-            data: {answer: "Cancel",
-                   reqID: document.getElementById('reqID'+i).innerText,
-                  whID: document.getElementById('whID'+i).innerText,
-                  reqType: document.getElementById('reqType'+i).innerText,
-                  buyerID: document.getElementById('buyerID'+i).innerText,
-                  area: document.getElementById('area'+i).innerText
-                  //other things will be here
-                },
-                success:function(data){
-              if(data==true){
-                alert("주문이 정상적으로 취소되었습니다.");
-                window.location.href = "/Buyer/MyWarehouse";
-              }
-              else{
-                alert("에러가 발생했습니다.");
-                window.location.href = "/Buyer/MyWarehouse";
-              }
-            }
-          });
-          break;
-          case 1: // Pay
-          $.ajax({
-            url: '/Buyer/MyWarehouse/Buy/Ans',
-            dataType: 'json',
-            type: 'POST',
-            data: {answer: "Accept",
-                  reqID: document.getElementById('reqID'+i).innerText,
-                  whID: document.getElementById('whID'+i).innerText,
-                  reqType: document.getElementById('reqType'+i).innerText,
-                  buyerID: document.getElementById('buyerID'+i).innerText,
-                  area: document.getElementById('area'+i).innerText
-                  //other things will be here
-                },
-                success:function(data){
+      <div class="overlay"></div>
+      <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+      <script>
+        function byClick(i, flag) {
+          switch (flag) {
+            case 0: // Cancel
+              $.ajax({
+                url: '/MyWarehouse/Buy/Ans',
+                dataType: 'json',
+                type: 'POST',
+                data: {answer: "Cancel",
+                      reqID: document.getElementById('reqID'+i).innerText,
+                      whID: document.getElementById('whID'+i).innerText,
+                      reqType: document.getElementById('reqType'+i).innerText,
+                      buyerID: document.getElementById('buyerID'+i).innerText,
+                      area: document.getElementById('area'+i).innerText
+                      //other things will be here
+                    },
+                    success:function(data){
                   if(data==true){
-                    alert("주문이 정상적으로 처리되었습니다.");
+                    alert("주문이 정상적으로 취소되었습니다.");
                     window.location.href = "/Buyer/MyWarehouse";
                   }
                   else{
-                  alert("에러가 발생했습니다.");
-                  window.location.href = "/Buyer/MyWarehouse";
+                    alert("에러가 발생했습니다.");
+                    window.location.href = "/Buyer/MyWarehouse";
+                  }
                 }
-              }
-              
-          });
-          break;
-        case 2: // Confirm
-          $.ajax({
-            url: '/Buyer/MyWarehouse/Buy/Ans',
-            dataType: 'json',
-            type: 'POST',
-            data: {answer: "Confirm",
-                  reqID: document.getElementById('reqID'+i).innerText,
-                  whID: document.getElementById('whID'+i).innerText,
-                  reqType: document.getElementById('reqType'+i).innerText,
-                  buyerID: document.getElementById('buyerID'+i).innerText,
-                  area: document.getElementById('area'+i).innerText
-                  //other things will be here
+              });
+              break;
+              case 1: // Pay
+              $.ajax({
+                url: '/Buyer/MyWarehouse/Buy/Ans',
+                dataType: 'json',
+                type: 'POST',
+                data: {answer: "Accept",
+                      reqID: document.getElementById('reqID'+i).innerText,
+                      whID: document.getElementById('whID'+i).innerText,
+                      reqType: document.getElementById('reqType'+i).innerText,
+                      buyerID: document.getElementById('buyerID'+i).innerText,
+                      area: document.getElementById('area'+i).innerText
+                      //other things will be here
+                    },
+                    success:function(data){
+                      if(data==true){
+                        alert("주문이 정상적으로 처리되었습니다.");
+                        window.location.href = "/Buyer/MyWarehouse";
+                      }
+                      else{
+                      alert("에러가 발생했습니다.");
+                      window.location.href = "/Buyer/MyWarehouse";
+                    }
+                  }
+
+              });
+              break;
+            case 2: // Confirm
+              $.ajax({
+                url: '/Buyer/MyWarehouse/Buy/Ans',
+                dataType: 'json',
+                type: 'POST',
+                data: {answer: "Confirm",
+                      reqID: document.getElementById('reqID'+i).innerText,
+                      whID: document.getElementById('whID'+i).innerText,
+                      reqType: document.getElementById('reqType'+i).innerText,
+                      buyerID: document.getElementById('buyerID'+i).innerText,
+                      area: document.getElementById('area'+i).innerText
+                      //other things will be here
+                    },
+                    success:function(data){
+                    if(data==true){
+                      alert("확인하였습니다.");
+                      window.location.href = "/Buyer/MyWarehouse";
+                    }
+                    else{
+                      alert("에러가 발생했습니다.");
+                      window.location.href = "/Buyer/MyWarehouse";
+                  }
+                }
+              });
+              break;
+          }
+        }
+      </script>
+      <script src="https://www.paypal.com/sdk/js?client-id=AX9DHIhQNLGR2SU10U4yxGWt3js_jloq6e_l3WQPiy_YhAQV8Hy4UqTUYshl8eJDSo-oMVNhJGoRC-_i"></script>
+      <script>
+        if(document.getElementById("payFlag").innerText == 'T'){
+            paypal.Buttons({
+                createOrder:function(data,actions){
+                  return actions.order.create({
+                    purchase_units:[{
+                      amount:{
+                            currency : "USD",
+                            value: document.getElementById('totalMoney').innerText
+                        }
+                    }]
+                  });
                 },
-                success:function(data){
-                if(data==true){
-                  alert("확인하였습니다.");
-                  window.location.href = "/Buyer/MyWarehouse";
+
+                onApprove: function(data,actions){
+                  return actions.order.capture().then(function(details){
+                    byClick(document.getElementById('count').innerText, 1)
+                  });
                 }
-                else{
-                  alert("에러가 발생했습니다.");
-                  window.location.href = "/Buyer/MyWarehouse";
-              }
-            }
-          });
-          break;
-      }
-    }
-  </script>
+            }).render('#paypal-button-container');
+          }
+     </script>
+     <script>
+       function getCheckboxValue(event) {
+           let result = 0;
+           if(event.target.checked){
+             result = event.target.value;
+             result *= 1;
+             console.log(result);
+           }
+           else{
+             result -= event.target.value;
+           }
+
+           var a = document.getElementById('totalMoney').innerText;
+           a *= 1;
+           document.getElementById('totalMoney').innerText = (result + a);
+           alert(document.getElementById('totalMoney').innerText);
+       }
+    </script>
+  </body>
 </html>
