@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <%- include('../../head')  %>
+    <link rel="stylesheet" href="//malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.min.css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+    <%- include('../../head')%>
     <title></title>
   </head>
   <body>
@@ -64,88 +67,89 @@
           </div>
         </div>
       <p id = "items" style="display: none"><%=items%></p>
-      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbLf3rqJGbCshSqcvAIUibIzjdOv0M4to&callback=initMap&region=kr"></script>
-      <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-      <script>
-        var map;
-        var i = 0;
-        var markers = [];
-        function createImage(objImageInfo){
-          var strDOM = "";
-         for( image in objImageInfo){
-            strDOM+=`<div class  = "image_panel">`;
-            strDOM+=`<img src="${objImageInfo[image]["url"]}">`;
-            strDOM+=`</div>`
-          }
-          document.getElementById("image_container").innerHTML = strDOM;
-        }
-        function initMap() {
-          var daegu = { lat: 35.87222 ,lng: 128.60250 };
-          var items = JSON.parse(document.getElementById("items").innerText);
-          map = new google.maps.Map(
-            document.getElementById('map'), {
-              zoom: 12,
-              center: daegu
-          });
-          for(key in items){
-              markers[i] = new google.maps.Marker({
-              position: {lat : items[key].latitude, lng: items[key].longitude},
-              map: map,
-            });
-            markers[i].addListener('click', function(){
-              var k = 'item'+markers.indexOf(this);
-              $.ajax({
-                  url: '/Buyer/FindWH/FindImage',
-                  type: 'POST',
-                  data:{'warehouseID':items[k].warehouseID},
-                  dataType : 'json',
-                  success : function(data){
-                      createImage(data)
-                  }
-              })
-              map.setCenter(this.getPosition());
-              $("#whID").html(items[k]['warehouseID']);
-              $("#whName").html(items[k]['warehouseName']);
-              $("#whAddress").html(items[k]['address']);
-              $("#whFloorArea").html(items[k]['floorArea']);
-              $("#whUseableArea").html(items[k]['useableArea']);
-              $("#whPrice").html(items[k]['price']);
-              $("#whInfoComment").html(items[k]['infoComment']);
-            });
-            i++;
-          }
-        }
-
-        $('#bu').click(function() {
-            console.log(document.getElementById("whID").innerText);
-            let useableArea = $('#whUseableArea').val()
-            let wantArea = $('#area').val()
-            if(useableArea>wantArea){
-              alert("사용공유면적보다 큰 면적을 신청하였습니다. 다시 신청해 주세요!");
-              return;
-            }
-            $.ajax({
-                  url: '/Buyer/FindWH/Inquire',
-                  dataType: 'json',
-                  type: 'POST',
-                  data: {
-                    warehouseID: document.getElementById("whID").innerText,
-                    area: $('#area').val()
-                  },
-                  success:function(data){
-                if(data==true){
-                  alert("창고공유를 신청하였습니다.");
-                  window.location.href = "/Buyer/MyWarehouse";
-                }
-                else{
-                  alert("에러가 발생했습니다.");
-                  window.location.href = "/Buyer/FindWH";
-                }
-              }
-            });
-        });
-      </script>
     </div>
     <div class="overlay"></div>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbLf3rqJGbCshSqcvAIUibIzjdOv0M4to&callback=initMap&region=kr"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+      var map;
+      var i = 0;
+      var markers = [];
+      function createImage(objImageInfo){
+        var strDOM = "";
+       for( image in objImageInfo){
+          strDOM+=`<div class  = "image_panel">`;
+          strDOM+=`<img src="${objImageInfo[image]["url"]}">`;
+          strDOM+=`</div>`
+        }
+        document.getElementById("image_container").innerHTML = strDOM;
+      }
+      function initMap() {
+        var daegu = { lat: 35.87222 ,lng: 128.60250 };
+        var items = JSON.parse(document.getElementById("items").innerText);
+        map = new google.maps.Map(
+          document.getElementById('map'), {
+            zoom: 12,
+            center: daegu
+        });
+        for(key in items){
+            markers[i] = new google.maps.Marker({
+            position: {lat : items[key].latitude, lng: items[key].longitude},
+            map: map,
+          });
+          markers[i].addListener('click', function(){
+            var k = 'item'+markers.indexOf(this);
+            $.ajax({
+                url: '/Buyer/FindWH/FindImage',
+                type: 'POST',
+                data:{'warehouseID':items[k].warehouseID},
+                dataType : 'json',
+                success : function(data){
+                    createImage(data)
+                }
+            })
+            map.setCenter(this.getPosition());
+            $("#whID").html(items[k]['warehouseID']);
+            $("#whName").html(items[k]['warehouseName']);
+            $("#whAddress").html(items[k]['address']);
+            $("#whFloorArea").html(items[k]['floorArea']);
+            $("#whUseableArea").html(items[k]['useableArea']);
+            $("#whPrice").html(items[k]['price']);
+            $("#whInfoComment").html(items[k]['infoComment']);
+          });
+          i++;
+        }
+      }
+
+      $('#bu').click(function() {
+          console.log(document.getElementById("whID").innerText);
+          let useableArea = $('#whUseableArea').val()
+          let wantArea = $('#area').val()
+          if(useableArea>wantArea){
+            alert("사용공유면적보다 큰 면적을 신청하였습니다. 다시 신청해 주세요!");
+            return;
+          }
+          $.ajax({
+                url: '/Buyer/FindWH/Inquire',
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                  warehouseID: document.getElementById("whID").innerText,
+                  area: $('#area').val()
+                },
+                success:function(data){
+              if(data==true){
+                alert("창고공유를 신청하였습니다.");
+                window.location.href = "/Buyer/MyWarehouse";
+              }
+              else{
+                alert("에러가 발생했습니다.");
+                window.location.href = "/Buyer/FindWH";
+              }
+            }
+          });
+      });
+    </script>
+  </div>
   </body>
 </html>
