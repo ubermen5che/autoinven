@@ -1,24 +1,29 @@
 {
-  "name": "JPRoom",
+  "name": "autoinven",
   "version": "1.0.0",
   "description": "",
   "main": "webserver.js",
   "scripts": {
+    "start": "node server/index.js",
+    "backend": "nodemon ./webserver.js",
+    "blockchain": "python3 ./blockchain/server2.py",
+    "dev": "concurrently \"npm run blockchain\" \"npm run backend\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KNU-JPRoom/JPRoom.git"
+    "url": "git+https://github.com/ubermen5che/autoinven"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/KNU-JPRoom/JPRoom/issues"
+    "url": "https://github.com/ubermen5che/autoinven/issues"
   },
-  "homepage": "https://github.com/KNU-JPRoom/JPRoom#readme",
+  "homepage": "https://github.com/ubermen5che/autoinven#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "concurrently": "^5.3.0",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.0",
@@ -29,6 +34,7 @@
     "net": "^1.0.2",
     "node-pickle": "0.0.2",
     "nodemailer": "^6.4.13",
+    "nodemon": "^2.0.7",
     "paypal-rest-sdk": "^1.8.1",
     "pickle": "^0.2.0",
     "sync-mysql": "^3.0.1"
