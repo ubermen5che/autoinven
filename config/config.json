@@ -1,0 +1,27 @@
+{
+    "development": {
+      "username": "user",
+      "password": "password",
+      "database": "autoinven",
+      "host": "mysql",
+      "port": 3306,
+      "dialect": "mysql",
+      "operatorsAliases": false
+    },
+    "test": {
+      "username": "root",
+      "password": "autoin1020$",
+      "database": "autoinven",
+      "host": "127.0.0.1",
+      "dialect": "mysql",
+      "operatorsAliases": false
+    },
+    "production": {
+      "username": "root",
+      "password": "autoin1020$",
+      "database": "autoinven",
+      "host": "127.0.0.1",
+      "dialect": "mysql",
+      "operatorsAliases": false
+    }
+  }
