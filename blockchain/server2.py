@@ -32,14 +32,14 @@ class UserManager(): # 사용자관리 및 채팅 메세지 전송을 담당하�
 
    def addUser(self, username, conn, addr): # 사용자 ID를 self.users에 추가하는 함수
       if username in self.users: # 이미 등록된 사용자라면
-         conn.send('이미 등록된 노드입니다.\n'.encode())
+         conn.send('already enrolled node.\n'.encode())
          return None
 
           # 새로운 사용자를 등록함
       lock.acquire() # 스레드 동기화를 막기위한 락
       self.users[username] = (conn, addr)
       lock.release() # 업데이트 후 락 해제
-      print('+++ 노드 참여자 수 [%d]' %len(self.users))
+      print('+++ The number of node participants [%d]' %len(self.users))
       return username
 
 #   def setUserState(self, username, state):
@@ -56,7 +56,7 @@ class UserManager(): # 사용자관리 및 채팅 메세지 전송을 담당하�
        lock.acquire()
        del self.users[username]
        lock.release()
-       print('--- 노드 참여자 수 [%d]' %len(self.users))
+       print('--- The number of node participants [%d]' %len(self.users))
 
 
    def messageHandler(self, username, msg):
@@ -175,7 +175,7 @@ class MyTcpHandler(socketserver.BaseRequestHandler):
       except Exception as e:
          print(e)
 
-      print('[%s] 접속종료' %self.client_address[0])
+      print('[%s] disconnected' %self.client_address[0])
       self.userman.removeUser(username)
 
     def registerUsername(self):
@@ -201,14 +201,14 @@ class ChatingServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     pass
 
 def runServer():
-   print('+++ blockchain network를 시작합니다.')
-   print('+++ network를 끝내려면 Ctrl-C를 누르세요.')
+   print('+++ blockchain network was started.')
+   print('+++ press ctrl-c to terminate blockchain network')
 
    try:
       server = ChatingServer((HOST, PORT), MyTcpHandler)
       server.serve_forever()
    except KeyboardInterrupt:
-      print('--- blockchain network를 종료합니다.')
+      print('--- blockchain network was terminated.')
       server.shutdown()
       server.server_close()
 
