@@ -4,10 +4,9 @@
   "description": "",
   "main": "webserver.js",
   "scripts": {
-    "start": "node server/index.js",
     "backend": "nodemon ./webserver.js",
     "blockchain": "python3 ./blockchain/server2.py",
-    "dev": "concurrently \"npm run blockchain\" \"npm run backend\"",
+    "serv": "concurrently \"npm run blockchain\" \"npm run backend\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
