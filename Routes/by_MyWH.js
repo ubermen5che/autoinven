@@ -163,3 +163,7 @@ exports.ReqBuyWithAnswer = function(req,res,app,db){
     }
   }
 }
+
+exports.GetAmountsForItems = function(req,res,app,db){
+  
+}
