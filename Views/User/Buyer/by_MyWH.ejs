@@ -205,6 +205,32 @@
       </script>
       <script src="https://www.paypal.com/sdk/js?client-id=AX9DHIhQNLGR2SU10U4yxGWt3js_jloq6e_l3WQPiy_YhAQV8Hy4UqTUYshl8eJDSo-oMVNhJGoRC-_i"></script>
       <script>
+        function getAmounts()
+        {
+          $.ajax({
+                url: '/Buyer/MyWarehouse/Buy/Ans',
+                dataType: 'json',
+                type: 'POST',
+                data: {answer: "Confirm",
+                      reqID: document.getElementById('reqID'+i).innerText,
+                      whID: document.getElementById('whID'+i).innerText,
+                      reqType: document.getElementById('reqType'+i).innerText,
+                      buyerID: document.getElementById('buyerID'+i).innerText,
+                      area: document.getElementById('area'+i).innerText
+                      //other things will be here
+                    },
+                    success:function(data){
+                    if(data==true){
+                      alert("확인하였습니다.");
+                      window.location.href = "/Buyer/MyWarehouse";
+                    }
+                    else{
+                      alert("에러가 발생했습니다.");
+                      window.location.href = "/Buyer/MyWarehouse";
+                  }
+                }
+            });
+        }
         if(document.getElementById("payFlag").innerText == 'T'){
             paypal.Buttons({
                 createOrder:function(data,actions){
