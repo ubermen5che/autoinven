@@ -139,6 +139,7 @@ exports.ReqBuyWithAnswer = function(req,res,app,db){
                       res.send(false);
                       connection.end()
                     }
+                    /*
                     else{
                             var sock = require('../Module/bcsocket').socket;
                             var dic = {
@@ -155,6 +156,12 @@ exports.ReqBuyWithAnswer = function(req,res,app,db){
                             res.send(true);
                             connection.end();
                     }
+                    */
+                   else{
+                     console.log('주문이 정상적으로 처리되었습니다.');
+                     res.send(true);
+                     connection.end();
+                   }
                   });
                 }
             });
