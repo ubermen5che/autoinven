@@ -6,11 +6,18 @@
   </head>
   <body>
     <%- include('../nav_Bar') %>
-
+    <div class="page-header page-header-small">
+      <div class="page-header-image" data-parallax="true" style="background-image: url('../../../Image/about_WH.jpg');"></div>
+      <div class="content-center">
+        <div class="container">
+          <h1 class="title">This is our great company.</h1>
+        </div>
+      </div>
+    </div>
     <div class="container mb-3">
 
       <h3 class="contentBoxTop mb-3">My Info</h3>
-        <div class="-groformup row">
+        <div class="form-group row">
           <label for="memberID" class="col-sm-3 col-form-label">ID</label>
           <div class="col-sm-9">
             <input type="text" id="memberID" name="memberID" value= "<%=session.memberID%>" disabled="disabled" class="form-control">
@@ -73,17 +80,6 @@
         </div>
 
         <div class="form-group row">
-          <label for="RN" class="col-sm-3 col-form-label">resident-number</label>
-          <div class="col-sm-9">
-            <input type="text" id="RN" name="RN" value="<%=session.RN%>"disabled="disabled" class="form-control">
-            <% if(locals.err){ %>
-              <span class="invalid-feedback"><%= locals.err %></span>
-            <% } %>
-          </div>
-        </div>
-
-
-        <div class="form-group row">
           <label for="contactNumber" class="col-sm-3 col-form-label">contact-number</label>
           <div class="col-sm-9">
             <input type="text" id="contactNumber" name="contactNumber" value="<%=session.contactNumber%>"disabled="disabled" class="form-control">
@@ -141,12 +137,31 @@
             <form action="/" method="get">
               <button type="BACK" class="btn btn-primary" onclick=location.href="/">BACK</button>
             </form>
+            <!--
+            <form action="/User/Delete" method="post" onsubmit="return false;">
+              <input type="submit" id="deleteBtn" class="btn btn-primary" value = "Delete">
+            </form>
+          -->
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="/JS/navShrink.js"></script>
     <script>
       $(document).ready(function(){
+        $('#deleteBtn').click(function(){
+            var session = '<%-session %>';
+
+            $.ajax({
+              url: '/User/Delete',
+              type: 'POST',
+              data: {'session': session},
+              success: function(result){
+                console.log('delete result: ' + result);
+              }
+            })
+
+        });
         $('#idCheckButton').click(function(){
           var memberID = $('#memberID').val();
           if(memberID!=''){
@@ -184,6 +199,7 @@
               }); 
           }
         });
+
       })
     </script>
   </body>
