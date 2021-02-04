@@ -23,7 +23,7 @@ exports.RequestForEnroll = function (req, res,app,db) {
 
 exports.RequestForBuy = function (req, res,app,db) {
   var items="{";
-  var sql = "select * from RequestForBuy where warehouseID in (SELECT warehouseID from Provider where memberID='"+req.session['memberID']+"')";
+  var sql = "select * from RequestForBuy, Warehouse, Member where Member.memberID=RequestForBuy.buyerID and RequestForBuy.warehouseID=Warehouse.warehouseID and Warehouse.warehouseID in (SELECT warehouseID from Provider where memberID='"+req.session['memberID']+"')";
   let results = db.query(sql);
   if(results.length > 0) {
       var step;
@@ -34,14 +34,28 @@ exports.RequestForBuy = function (req, res,app,db) {
               "\"reqDate\" :\""+ results[step].reqDate+"\","+
               "\"reqType\" :\"" + results[step].reqType+"\","+
               "\"warehouseID\" :"+ results[step].warehouseID+","+
-              "\"buyerID\" :\""+ results[step].buyerID+"\""+
+              "\"address\" :\""+ results[step].address+"\","+
+              "\"floorArea\" :"+ results[step].floorArea+","+
+              "\"useableArea\" :"+ results[step].useableArea+","+
+              "\"amounts\" :"+ results[step].price * results[step].area+","+
+              "\"startDate\" :\""+ results[step].startDate.substring(0,10)+"\","+
+              "\"endDate\" :\""+ results[step].endDate.substring(0,10)+"\","+
+              "\"buyerID\" :\""+ results[step].buyerID+"\","+
+              "\"name\" :\""+ results[step].name+"\","+
+              "\"email\" :\""+ results[step].email+"\","+
+              "\"contractNumber\" :\""+ results[step].contractNumber+"\","+
+              "\"national\" :\""+ results[step].national+"\","+
+              "\"CA\" :\""+ results[step].CA+"\","+
+              "\"CN\" :\""+ results[step].CN+"\","+
+              "\"CCN\" :\""+ results[step].CCN+"\","+
+              "\"area\" :"+ results[step].area+
           "}";
           items+=obj;
           if(step+1<results.length)items+=","
       }
   }
   items +="}";
-  console.log(items);
+  console.log('RequestForBuy (pv_MyWH.js)' + items);
   return items;
 }
 
@@ -81,7 +95,6 @@ exports.Mywarehouse = function(req,res,app,db){
       }
   }
   items +="}";
-  console.log(items)
   return items;
 }
 
