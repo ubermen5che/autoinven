@@ -54,6 +54,7 @@ exports.inquireWH =function (req, res,app,db) {
     var reqno = 1;
     if(reqResult.length>0)
     reqno = reqResult[0].reqID+1;
+    console.log('sDate :' + req.body.startDate + 'eDate :' + req.body.endDate);
     var reqItem ={
         "reqID":reqno,
         "reqDate":new Date(),
@@ -61,7 +62,9 @@ exports.inquireWH =function (req, res,app,db) {
         "buyerID":req.session['memberID'],
         "warehouseID":parseInt(req.body.warehouseID),
         "area":parseInt(req.body.area),
-        "logID":1
+        "logID":1,
+        "startDate": req.body.startDate,
+        "endDate": req.body.endDate
     };
     connection.query('INSERT INTO RequestForBuy SET ?' , reqItem, function (error, results, fields) {
         if(error){
