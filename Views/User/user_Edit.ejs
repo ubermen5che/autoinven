@@ -6,7 +6,7 @@
   </head>
   <body>
     <%- include('../nav_Bar') %>
-
+    
     <div class="container mb-3">
 
       <h3 class="contentBoxTop mb-3">Edit</h3>
@@ -138,9 +138,7 @@
         </div>
 
         <div class="form-group">
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Save</button>
-            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
         </div>
       </form> 
       <form action="/User/Delete" method="get">
@@ -152,6 +150,7 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="/JS/navShrink.js"></script>
     <script>
       $(document).ready(function(){
         $('#idCheckButton').click(function(){
