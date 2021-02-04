@@ -1,15 +1,17 @@
 
-// ȸ������ �ڵ鷯
+// ȸ������ �ڵ鷯
 exports.register = function (req, res,app,db) {
     var mysql = require('mysql');
+    const crypto = require('crypto');
+    
+    console.log('req.body.memberID :' + req.body.memberID);
     var connection = mysql.createConnection(require('../Module/db').info);
     connection.connect();
     var user = {
         "memberID": req.body.memberID,
         "type": req.body.type,
         "name": req.body.name,
-        "password": req.body.password,
-        "RN": req.body.RN1+'-'+req.body.RN2,
+        "password": crypto.createHash('sha512').update(req.body.password).digest('base64'),         //레인보우 테이블을 이용한 공격방어를 위해 추후 더 나은 보안기법 필요함.
         "email": req.body.email,
         "contactNumber": req.body.contactNumber1+'-'+req.body.contactNumber2+'-'+req.body.contactNumber3,
         "address": req.body.address,
@@ -18,16 +20,16 @@ exports.register = function (req, res,app,db) {
         "CA" :req.body.CA,
         "CCN": req.body.CCN
     }
+
     connection.query('INSERT INTO Member SET ?' , user, function (error, results, fields) {
         if (error) {
             console.log("error ocurred", error);
-            res.redirect('/User/Register');
+            res.send(false);
         } else {
             req.session['memberID'] = user.memberID;
             req.session['type'] = user.type;
             req.session['username'] = user.name;
             req.session['password'] = user.password;
-            req.session['RN'] = user.RN;
             req.session['contactNumber'] = user.contactNumber;
             req.session['email'] = user.email;
             req.session['address'] = user.address;
@@ -35,7 +37,7 @@ exports.register = function (req, res,app,db) {
             req.session['CN'] = user.CN;
             req.session['CCN'] = user.CCN;
             req.session['CA'] = user.CA;
-            res.redirect('/');
+            res.send(true);
         }
         connection.end()
     });
@@ -49,4 +51,43 @@ exports.checkID = function(req,res,app,db){
     var results = db.query(`SELECT * FROM Member WHERE memberID='${memberID}'`);
     if(!results.length)res.send(true);
     else res.send(false);
+}
+
+exports.checkPW = function(req,res,app,db){
+    var attr = req.body;
+    console.log(attr)
+    var id = attr.id;
+    var pw = attr.pw;
+    var c_p = attr.c_p;
+    var reg = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+    var koreancheck = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/;
+    
+    if (false === reg.test(pw)) {
+        //error all
+        res.send("errortype1");
+    } else if (id == '') {
+        res.send("errortype7");
+        //id 필드가 empty일 경우
+    } else if (/(\w)\1\1\1/.test(pw)) {
+        //length error
+        res.send("errortype2");
+
+    } else if (pw.search(id) > -1) {
+        //pw have id error
+        res.send("errortype3");
+
+    } else if (pw.search(/\s/) != -1) {
+        //blank error
+        res.send("errortype4");
+
+    } else if (koreancheck.test(pw)) {
+        //korean error
+        res.send("errortype5");
+
+    } else if (c_p === pw) {
+        //success
+        res.send("errortype0");
+    } else {
+        res.send("errortype6");
+    }
 }
