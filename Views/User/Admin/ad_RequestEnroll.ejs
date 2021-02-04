@@ -32,38 +32,63 @@
             <h2 class="mb-3">Submit lists</h2>
             <% for(var i=0; i < Object.keys(items).length; i++) { %>
               <p id = "whID<%=i%>" style="display: none"><%= items['item'+i].warehouseID %></p>
-              <p id = "reqID<%=i%>" style="display: none"><%= items['item'+i].reqID%></p>
-              <p id = "reqType<%=i%>" style="display: none"><%= items['item'+i].reqType%></p>
+              <p id = "reqType<%=i%>" style="display: none"><%= items['item'+i].reqType %></p>
+              <p id = "reqID<%=i%>" style="display: none"><%= items['item'+i].reqID %></p>
               <p id = "providerID<%=i%>" style="display: none"><%= items['item'+i].providerID%></p>
+              <p id = "floorArea<%=i%>" style="display: none"><%= items['item'+i].floorArea%></p>
+              <p id = "national<%=i%>" style="display: none"><%= items['item'+i].national%></p>
+              <p id = "CN<%=i%>" style="display: none"><%= items['item'+i].CN%></p>
+              <p id = "CCN<%=i%>" style="display: none"><%= items['item'+i].CCN%></p>
+              <p id = "name<%=i%>" style="display: none"><%= items['item'+i].name%></p>
+              <p id = "CA<%=i%>" style="display: none"><%= items['item'+i].CA%></p>
+              <p id = "address<%=i%>" style="display: none"><%= items['item'+i].address%></p> 
+              
             <%}%>
-            <table class="board-table table ">
-              <thead class="thead-dark">
-                <tr>
-                  <th>Title</th>
-                  <th>State</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <% for(var i=0; i < Object.keys(items).length; i++) { %>
-                   <% if(items['item'+i].reqType == "ReqEnrollPV"){ %>
-                     <tr class="table-warning">
-                       <td><%= items['item'+i].warehouseID %></td>
-                       <td>Pending approval</td>
-                       <td style="float:right; padding:0px 10px 0px 0px;">
-                         <button type="button" class="btn btn-sm" onclick="adClick(<%=i%>, 1)">Approval</button>
-                         <button type="button" class="btn btn-sm" onclick="adClick(<%=i%>, 0)">Cancel</button>
-                       </td>
-                     </tr>
-                   <% } %>
-                <% } %>
-              </tbody>
-            </table>
+            <div class="table-responsive">
+              <table class="board-table table ">
+                <thead class="thead-dark">
+                  <tr class="d-flex">
+                    <th class="col-1">창고 번호</th>
+                    <th class="col-1">상태</th>
+                    <th class="col-1">창고 면적</th>
+                    <th class="col-2">ID</th>
+                    <th class="col-2">이름</th>
+                    <th class="col-3">창고 주소</th>
+                    <th class="col-1">국적</th>
+                    <th class="col-1">회사 이름</th>
+                    <th class="col-3">회사 주소</th>
+                    <th class="col-1"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for(var i=0; i < Object.keys(items).length; i++) { %>
+                    <% if(items['item'+i].reqType == "ReqEnrollPV"){ %>
+                      <tr class="table-warning d-flex">
+                        <td class="col-1"><%= items['item'+i].warehouseID %></td>
+                        <td class="col-1">승인대기</td>
+                        <td class="col-1"><%= items['item'+i].floorArea %></td>
+                        <td class="col-2"><%= items['item'+i].providerID %></td>
+                        <td class="col-2"><%= items['item'+i].name %></td>
+                        <td class="col-3"><%= items['item'+i].address %></td>
+                        <td class="col-1"><%= items['item'+i].national %></td>
+                        <td class="col-1"><%= items['item'+i].CN %></td>
+                        <td class="col-3"><%= items['item'+i].CA %></td>
+                        <td class="col-1" style="float:right; padding:0px 10px 0px 0px;">
+                          <button type="button" class="btn btn-sm" onclick="adClick(<%=i%>, 1)">Approval</button>
+                          <button type="button" class="btn btn-sm" onclick="adClick(<%=i%>, 0)">Cancel</button>
+                        </td>
+                      </tr>
+                    <% } %>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-    </div>
+     </div>
     <div class="overlay"></div>
   </body>
+  <script src="/JS/navShrink.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
   <script>
     function adClick(i, flag) {
@@ -95,7 +120,11 @@
               url: '/Admin/RequestEnroll',
               dataType: 'json',
               type: 'POST',
-              data: {answer: "Reject", reqID: document.getElementById('whID'+i).innerText},
+              data: {
+                answer: "Reject",
+                reqID: parseInt(document.getElementById('reqID'+i).innerText),
+                warehouseID: parseInt(document.getElementById('whID'+i).innerText),
+              },
               success:function(data){
                 if(data==true){
                   alert("거절하였습니다.");
