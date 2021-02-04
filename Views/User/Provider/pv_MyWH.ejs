@@ -5,7 +5,7 @@
     <title></title>
   </head>
   <body>
-    <div id="content">
+<!--    <div id="content"></div> 이 태그를 지웠더니 버튼이 활성화됨. -->
       <%- include('../../nav_Bar') %>
       <div class="page-header page-header-small">
         <div class="page-header-image" data-parallax="true" style="background-image: url('../../../Image/about_WH.jpg');"></div>
@@ -15,9 +15,9 @@
           </div>
         </div>
       </div>
-      <div class="container">
 
-        <div class="container">
+    <div class="container">
+      <div class="container">
           <h2>My Warehouse</h2>
           <div id="accordion">
             <% for(var i=0; i < Object.keys(wList).length; i++) { %>
@@ -30,31 +30,70 @@
                 <div id="collapse<%=i%>" class="collapse" data-parent="#accordion">
                   <div class="card-body">
                     <table class="board-table table ">
+                      <a style = "font-size:24px">창고 정보</a>
                       <thead class="thead-dark">
                         <tr>
                           <th>주소</th>
+                          <th>창고 번호</th>
                           <th>총 면적</th>
-                          <th>사용가능면적</th>
-                          <th>계약자</th>
+                          <th>사용 가능 면적</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
                           <td><%= wList['item'+i].address %></td>
+                          <td><%= wList['item'+i].warehouseID %></td>
                           <td><%= wList['item'+i].floorArea %></td>
                           <td><%= wList['item'+i].useableArea %></td>
-                          <td><% for(var j=0; j < wList['item'+i]['memberList'].length; j++) { %>
-                            <%= wList['item'+i]['memberList'][j] %>
-                          <% } %></td>
                         </tr>
                       </tbody>
                     </table>
-                  </div>
-                </div>
-              </div>
-            <% } %>
+
+                    <div class="table-responsive">
+                      <table class="table table-striped ">
+                        <a style = "font-size:24px">거래 내역</a>
+                        <thead class="thead-dark">
+                          <tr class="d-flex">  
+                            <th class="col-2">창고번호</th>
+                            <th class="col-1">거래금액($)</th>
+                            <th class="col-3">대여기간</th>
+                            <th class="col-1">대여한 총면적(m^2)</th>
+                            <th class="col-1">이름</th>
+                            <th class="col-2">email</th>
+                            <th class="col-1">국적</th>
+                            <th class="col-1">회사 이름</th>
+                            <th class="col-3">회사 주소</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tbody>
+                            <% for(var j=0; j < Object.keys(requestItems).length; j++) { %>     
+                              <%if(requestItems['item'+j].reqType == 'ReqPayAcpt' && wList['item'+i].warehouseID == requestItems['item'+j].warehouseID) { %>
+                                <tr class="d-flex">
+                                  <td class="col-2"><%= requestItems['item'+j].warehouseID %></td>
+                                  <td class="col-1"><%= requestItems['item'+j].amounts%></td>
+                                  <td class="col-3"><%= requestItems['item'+j].startDate%> ~ <%= requestItems['item'+j].endDate%></td>
+                                  <td class="col-1"><%= requestItems['item'+j].area%></td>
+                                  <td class="col-1"><%= requestItems['item'+j].name%></td>
+                                  <td class="col-2"><%= requestItems['item'+j].email%></td>
+                                  <td class="col-1"><%= requestItems['item'+j].national%></td>
+                                  <td class="col-1"><%= requestItems['item'+j].CN%></td>
+                                  <td class="col-3"><%= requestItems['item'+j].CA%></td>
+                                  <td></td>
+                                </tr>
+                                <% } %>
+                            <% } %>
+                           </tbody>
+                         </tbody>
+                      </table>
+                    </div>                        
+                  </div>      <!-- card body-->
+               </div>         <!-- collapse-->
+             </div>           <!-- class card-->
+             <% } %>
           </div>
-        </div>
+      </div>
 
         <div class="container mb-3">
           <h2 class="mb-3">Warehouse Enroll lists</h2>
@@ -79,7 +118,7 @@
                      <td><%= enrollItems['item'+i].warehouseID %></td>
                      <td>Pending approval</td>
                      <td style="float:right; padding:0px 10px 0px 0px;">
-                       <button type="button" class="btn btn-sm" onclick="pvClick(0, <%=i%>, 0)">Cancel</button>
+                       <button type="button" class="btn btn-sm" onclick="pvClick(0, <%=i%>, 0)" >Cancel</button>
                      </td>
                    </tr>
                  <% } %>
@@ -96,7 +135,8 @@
             </tbody>
           </table>
         </div>
-        <div class="container mb-3">
+        
+        <div class="container mb-4">
           <h2 class="mb-3">Buy Request lists</h2>
           <% for(var i=0; i < Object.keys(requestItems).length; i++) { %>
             <p id = "whID1<%=i%>" style="display: none"><%= requestItems['item'+i].warehouseID %></p>
@@ -159,6 +199,7 @@
       </div>
     </div>
     <div class="overlay"></div>
+    <script src="/JS/navShrink.js"></script>
   </body>
   <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
   <script>
