@@ -1,8 +1,8 @@
 exports.RequestForBuy = function (req, res,app,db) {
   var items="{";
-  var sql = `select * from RequestForBuy`;
-  console.log(sql);
+  var sql = `select * from RequestForBuy, Warehouse where Warehouse.warehouseID=RequestForBuy.warehouseID`;
   let results = db.query(sql);
+  console.log(results);
   if(results.length > 0) {
       var step;
       for(step =0;step<results.length;step++){
@@ -13,6 +13,9 @@ exports.RequestForBuy = function (req, res,app,db) {
               "\"reqType\" :\"" + results[step].reqType+"\","+
               "\"warehouseID\" :"+ results[step].warehouseID +","+
               "\"buyerID\" :\""+ results[step].buyerID+"\","+
+              "\"amounts\" :\""+ (results[step].price * results[step].area)+"\","+
+              "\"startDate\" :\""+ results[step].startDate.substring(0,10) +"\","+
+              "\"endDate\" :\""+ results[step].endDate.substring(0,10) +"\","+
               "\"area\" :"+ results[step].area+
           "}";
           items+=obj;
