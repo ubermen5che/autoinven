@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <link rel="stylesheet" href="//malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.min.css"/>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="//malihu.github.io/custom-scrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
     <%- include('../../head')%>
     <title></title>
   </head>
@@ -58,98 +55,170 @@
               </tbody>
             </table>
             <button class="btn btn-warning btn-lg btn-block" data-toggle="collapse" data-target="#inquire">Inquire</button>
-
             <div id="inquire" class="collapse">
               사용할 면적 <input type ="text" id="area"/>
-              <button  type="submit" class="btn btn-primary" id="bu">submit</button>
-            </div>
 
+                <div class="form-group">
+                  <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                    <input id="sDate" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" value="01/11/2021">
+                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                    <input id = "eDate" type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2" value="01/15/2021">
+                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="bu">submit</button>                
+            </div>
           </div>
         </div>
       <p id = "items" style="display: none"><%=items%></p>
+      <p id = "startDate" style="display: none"></p>
+      <p id = "endDate" style="display: none"></p>
     </div>
     <div class="overlay"></div>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbLf3rqJGbCshSqcvAIUibIzjdOv0M4to&callback=initMap&region=kr"></script>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script>
-      var map;
-      var i = 0;
-      var markers = [];
-      function createImage(objImageInfo){
-        var strDOM = "";
-       for( image in objImageInfo){
-          strDOM+=`<div class  = "image_panel">`;
-          strDOM+=`<img src="${objImageInfo[image]["url"]}">`;
-          strDOM+=`</div>`
-        }
-        document.getElementById("image_container").innerHTML = strDOM;
-      }
-      function initMap() {
-        var daegu = { lat: 35.87222 ,lng: 128.60250 };
-        var items = JSON.parse(document.getElementById("items").innerText);
-        map = new google.maps.Map(
-          document.getElementById('map'), {
-            zoom: 12,
-            center: daegu
-        });
-        for(key in items){
-            markers[i] = new google.maps.Marker({
-            position: {lat : items[key].latitude, lng: items[key].longitude},
-            map: map,
-          });
-          markers[i].addListener('click', function(){
-            var k = 'item'+markers.indexOf(this);
-            $.ajax({
-                url: '/Buyer/FindWH/FindImage',
-                type: 'POST',
-                data:{'warehouseID':items[k].warehouseID},
-                dataType : 'json',
-                success : function(data){
-                    createImage(data)
-                }
-            })
-            map.setCenter(this.getPosition());
-            $("#whID").html(items[k]['warehouseID']);
-            $("#whName").html(items[k]['warehouseName']);
-            $("#whAddress").html(items[k]['address']);
-            $("#whFloorArea").html(items[k]['floorArea']);
-            $("#whUseableArea").html(items[k]['useableArea']);
-            $("#whPrice").html(items[k]['price']);
-            $("#whInfoComment").html(items[k]['infoComment']);
-          });
-          i++;
-        }
-      }
-
-      $('#bu').click(function() {
-          console.log(document.getElementById("whID").innerText);
-          let useableArea = $('#whUseableArea').val()
-          let wantArea = $('#area').val()
-          if(useableArea>wantArea){
-            alert("사용공유면적보다 큰 면적을 신청하였습니다. 다시 신청해 주세요!");
-            return;
-          }
-          $.ajax({
-                url: '/Buyer/FindWH/Inquire',
-                dataType: 'json',
-                type: 'POST',
-                data: {
-                  warehouseID: document.getElementById("whID").innerText,
-                  area: $('#area').val()
-                },
-                success:function(data){
-              if(data==true){
-                alert("창고공유를 신청하였습니다.");
-                window.location.href = "/Buyer/MyWarehouse";
-              }
-              else{
-                alert("에러가 발생했습니다.");
-                window.location.href = "/Buyer/FindWH";
-              }
-            }
-          });
-      });
-    </script>
-  </div>
+    <script src="/JS/navShrink.js"></script>
   </body>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBbLf3rqJGbCshSqcvAIUibIzjdOv0M4to&callback=initMap&region=kr"></script>
+  <script>
+    var map;
+    var i = 0;
+    var markers = [];
+    function createImage(objImageInfo){
+      var strDOM = "";
+     for( image in objImageInfo){
+        strDOM+=`<div class  = "image_panel">`;
+        strDOM+=`<img src="${objImageInfo[image]["url"]}">`;
+        strDOM+=`</div>`
+      }
+      document.getElementById("image_container").innerHTML = strDOM;
+    }
+    function initMap() {
+      var daegu = { lat: 35.87222 ,lng: 128.60250 };
+      var items = JSON.parse(document.getElementById("items").innerText);
+      map = new google.maps.Map(
+        document.getElementById('map'), {
+          zoom: 12,
+          center: daegu
+      });
+      for(key in items){
+          markers[i] = new google.maps.Marker({
+          position: {lat : items[key].latitude, lng: items[key].longitude},
+          map: map,
+        });
+        markers[i].addListener('click', function(){
+          var k = 'item'+markers.indexOf(this);
+          $.ajax({
+              url: '/Buyer/FindWH/FindImage',
+              type: 'POST',
+              data:{'warehouseID':items[k].warehouseID},
+              dataType : 'json',
+              success : function(data){
+                  createImage(data)
+              }
+          })
+          map.setCenter(this.getPosition());
+          $("#whID").html(items[k]['warehouseID']);
+          $("#whName").html(items[k]['warehouseName']);
+          $("#whAddress").html(items[k]['address']);
+          $("#whFloorArea").html(items[k]['floorArea']);
+          $("#whUseableArea").html(items[k]['useableArea']);
+          $("#whPrice").html(items[k]['price']);
+          $("#whInfoComment").html(items[k]['infoComment']);
+        });
+        i++;
+      }
+    }
+
+    $('#bu').click(function() {
+        console.log(document.getElementById("whID").innerText);
+        let useableArea = $('#whUseableArea').val()
+        let wantArea = $('#area').val()
+
+        console.log('창고 대여 시작일' + sDate);
+        console.log('창고 대여 종료일' + eDate);
+        if(useableArea>wantArea){
+          alert("사용공유면적보다 큰 면적을 신청하였습니다. 다시 신청해 주세요!");
+          return;
+        }
+        $.ajax({
+              url: '/Buyer/FindWH/Inquire',
+              dataType: 'json',
+              type: 'POST',
+              data: {
+                warehouseID: document.getElementById("whID").innerText,
+                area: $('#area').val(),
+                startDate : document.getElementById("startDate").innerText,
+                endDate : document.getElementById("endDate").innerText
+              },
+              success:function(data){
+            if(data==true){
+              alert("창고공유를 신청하였습니다.");
+              window.location.href = "/Buyer/MyWarehouse";
+            }
+            else{
+              console.log(startDate);
+              alert("에러가 발생했습니다.");
+              window.location.href = "/Buyer/FindWH";
+            }
+          }
+        });
+    });
+  </script>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> 
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"/>
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" />
+
+  <script type = "text/javascript">
+    (function($){
+      var temp = '';
+      var year;
+      var temp2 = '';
+      var newdate;
+      $(document).ready(function() {
+        $("#datetimepicker1").datetimepicker({
+            format: 'L'
+        });
+        $('#datetimepicker2').datetimepicker({
+            format: 'L',
+            useCurrent: false
+        });
+        $("#datetimepicker1").on("change.datetimepicker", function(e) {
+            $('#datetimepicker2').datetimepicker('minDate', e.date);
+            temp = document.getElementById('sDate').value; //01/22/2020
+            newdate = temp.split("/").reverse().join("-"); //2020-22-01
+            year = newdate.substring(0,5);
+            temp2 = newdate.substring(5,10);  // 22-01
+            temp = temp2.split("-").reverse().join("-"); //01-22
+            newdate = year + temp;
+            //newdate = newdate.split("/").reverse().join("-");
+            document.getElementById('startDate').innerText = newdate;
+        });
+        $("#datetimepicker2").on("change.datetimepicker", function(e) {
+            $('#datetimepicker1').datetimepicker('maxDate', e.date);
+            temp = document.getElementById('eDate').value;
+            newdate = temp.split("/").reverse().join("-"); //2020-22-01
+            year = newdate.substring(0,5);
+            temp2 = newdate.substring(5,10);  // 22-01
+            temp = temp2.split("-").reverse().join("-"); //01-22
+            newdate = year + temp;
+            //newdate = newdate.split("/").reverse().join("-");
+            document.getElementById('endDate').innerText = newdate;
+        });
+      });
+      $
+  })(jQuery);
+  </script>
+  <script></script>
 </html>
