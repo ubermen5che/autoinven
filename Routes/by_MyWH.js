@@ -2,7 +2,6 @@ exports.RequestForBuy = function (req, res,app,db) {
   var items="{";
   var sql = `select * from RequestForBuy, Warehouse where Warehouse.warehouseID=RequestForBuy.warehouseID and buyerID='`+req.session['memberID']+"'";
   let results = db.query(sql);
-  console.log(results);
   if(results.length > 0) {
       var step;
       for(step =0;step<results.length;step++){
@@ -15,14 +14,16 @@ exports.RequestForBuy = function (req, res,app,db) {
               "\"warehouseID\" :"+ results[step].warehouseID +","+
               "\"buyerID\" :\""+ results[step].buyerID+"\","+
               "\"area\" :"+ results[step].area+","+
-              "\"amounts\" :"+ results[step].price+""+
+              "\"amounts\" :"+ results[step].price+","+
+              "\"startDate\" :\""+ results[step].startDate.substring(0,10) +"\","+
+              "\"endDate\" :\""+ results[step].endDate.substring(0,10) +"\","+
+              "\"area\" :"+ results[step].area+
           "}";
           items+=obj;
           if(step+1<results.length)items+=","
       }
   }
   items +="}";
-  console.log(items);
   return items;
 }
 
@@ -104,6 +105,7 @@ exports.ReqBuyWithAnswer = function(req,res,app,db){
           }
           else{
             var info = {
+              reqID: req.body.reqID,
               memberID: req.session['memberID'],
               warehouseID: req.body.whID,
               area: req.body.area
@@ -116,9 +118,6 @@ exports.ReqBuyWithAnswer = function(req,res,app,db){
                   connection.end()
                 }
                 else{
-                  var sDate = new Date();
-                  var eDate = new Date();
-                  eDate.setDate(sDate.getDate()+30)
                   let result = db.query('select * from Contract ORDER BY contractID DESC');
                   var conno = 1;
                   if(result.length>0)
@@ -127,8 +126,8 @@ exports.ReqBuyWithAnswer = function(req,res,app,db){
                       contractID : conno,
                       buyerID : info['memberID'],
                       warehouseID : info['warehouseID'],
-                      startDate : sDate,
-                      endDate : eDate,
+                      startDate : req.body.startDate,
+                      endDate : req.body.endDate,
                       area : info['area'],
                       price : price[0].price * info['area'],                                    //추후 변경필요, 현재 8로 고정된 가격만 가능. -2020-12-19- 수정완료
                       logID : 1
