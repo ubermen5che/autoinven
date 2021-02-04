@@ -13,15 +13,16 @@ module.exports = function(app,db){
     });
 
     router.post('/EnrollWH',function(req,res,next){
-        let upLoadFile = req.files
-        const fileName = req.files.profile_img.name ;
-//        console.log(upLoadFile);
-//        console.log(fileName);
+        let upLoadFile = req.files;
+        const fileName = req.files.profile_img.name;
+        console.log('upLoadFile : ' + upLoadFile);
+        console.log(fileName);
         upLoadFile.profile_img.mv(
             `./Public/Upload/${fileName}`,
             function(err){
                 if(err){
-                    return req.status(500).send(err);
+                    res.send(err);
+                    console.log('file mv error' + err);
                 }
                 pv_EnrollWH.EnrollWH(req,res,app,db,fileName);
             }
@@ -42,7 +43,7 @@ module.exports = function(app,db){
         enrollItems = JSON.parse(enrollItems);
         requestItems = JSON.parse(requestItems);
         wList = JSON.parse(wList);
-        console.log(wList);
+        console.log(JSON.stringify(requestItems));
         res.render('User/Provider/pv_MyWH',{'app':app,'session':req.session,'db':db,'enrollItems':enrollItems,'requestItems':requestItems,'wList':wList});
     });
 
