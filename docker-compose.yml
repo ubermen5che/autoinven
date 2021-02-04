@@ -11,13 +11,13 @@ services:
     container_name: mysql_container
     restart: always
     ports:
-      - "33066:3306"
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=autoin1020
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=password
+      - MYSQL_USER=autoinven
+      - MYSQL_PASSWORD=autoin102030
       - MYSQL_DATABASE=autoinven
-  node:
+  nodejs:
     environment:
       MYSQL_HOST_IP: mysql # the name of mysql service in your docker-compose, which will get resolved to the internal IP of the mysql container
     networks:
@@ -33,5 +33,3 @@ services:
     depends_on:
       - mysql
     container_name: autoinven
-
-      
