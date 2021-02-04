@@ -1,3 +1,5 @@
+
+
 module.exports = function(app,db){
     var express = require('express');
     var router = express.Router();
@@ -11,13 +13,18 @@ module.exports = function(app,db){
 
     router.post('/Register/MemberID',function(req,res,next){
         register.checkID(req,res,app,db);
-    })
+    });
+
+    router.post("/Register/checkPW", function (req, res, next) {
+        register.checkPW(req,res,app,db);
+    });
 
     router.post('/Register/EmailIDF',function(req,res,next){
         emailIDF.emailIDF(req,res,app,db);
     });
 
     router.post('/Register',function(req,res,next){
+        console.log(req.body);  
         register.register(req,res,app,db);
     });
 
@@ -50,5 +57,10 @@ module.exports = function(app,db){
         res.render('User/user_Show',{'app':app,'session':req.session,'db':db});
     });
 
+    router.post('/Delete',function(req,res,next){
+        console.log('user.js : ' + req.body.session.session.memberID);
+        del.delete(req,res,app,db);
+    });
+    
     return router;
-};
+}
