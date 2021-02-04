@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <%- include('../../head')  %>
+    <title>Contract Info</title>
+  </head>
+  <body>
+    <div id="content">
+        <%- include('../../nav_Bar') %>
+        <div class="page-header page-header-small">
+          <div class="page-header-image" data-parallax="true" style="background-image: url('../../../Image/about_WH.jpg');"></div>
+          <div class="content-center">
+            <div class="container">
+              <h1 class="title">This is our great company.</h1>
+            </div>
+          </div>
+        </div>
+      <div class="container">
+        <div class="jumbotron" style = "text-align : center">
+          <h1>ContractInfo list</h1>
+        </div>
+        <div class="container mb-3">
+
+            <% for(var i=0; i < Object.keys(items).length; i++) { %>
+              <p id = "whID<%=i%>" style="display: none"><%= items['item'+i].warehouseID %></p>
+              <p id = "buyerID<%=i%>" style="display: none"><%= items['item'+i].buyerID%></p>
+              <p id = "contractID<%=i%>" style="display: none"><%= items['item'+i].contractID%></p>
+              <p id = "area<%=i%>" style="display: none"><%= items['item'+i].area%></p>
+              <p id = "amounts<%=i%>" style="display: none"><%= items['item'+i].amounts%></p>
+              <p id = "startDate<%=i%>" style="display: none"><%= items['item'+i].startDate%></p>
+              <p id = "endDate<%=i%>" style="display: none"><%= items['item'+i].endDate%></p>
+              <p id = "national<%=i%>" style="display: none"><%= items['item'+i].national%></p>
+              <p id = "CN<%=i%>" style="display: none"><%= items['item'+i].CN%></p>
+              <p id = "CCN<%=i%>" style="display: none"><%= items['item'+i].CCN%></p>
+              <p id = "name<%=i%>" style="display: none"><%= items['item'+i].name%></p>
+              <p id = "CA<%=i%>" style="display: none"><%= items['item'+i].CA%></p>
+              <p id = "email<%=i%>" style="display: none"><%= items['item'+i].email%></p>
+            <%}%>
+          <div class="table-responsive">
+            <table class="table table-striped ">
+              <thead class="thead-dark">
+                <tr class="d-flex">  
+                  <th class="col-1">창고번호</th>
+                  <th class="col-1"> 거래번호</th>
+                  <th class="col-1">거래금액($)</th>
+                  <th class="col-3">대여기간</th>
+                  <th class="col-1">대여공간(m^2)</th>
+                  <th class="col-1">Buyer ID</th>
+                  <th class="col-1">이름</th>
+                  <th class="col-2">email</th>
+                  <th class="col-3">주소</th>
+                  <th class="col-1">국적</th>
+                  <th class="col-1">회사 이름</th>
+                  <th class="col-3">회사 주소</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for(var i=0; i < Object.keys(items).length; i++) { %>
+                     <tr class="d-flex">
+                       <td class="col-1"><%= items['item'+i].warehouseID %></td>
+                       <td class="col-1"><%= items['item'+i].contractID %></td>
+                       <td class="col-1"><%= items['item'+i].amounts%></td>
+                       <td class="col-3"><%= items['item'+i].startDate%> ~ <%= items['item'+i].endDate%></td>
+                       <td class="col-1"><%= items['item'+i].area%></td>
+                       <td class="col-1"><%= items['item'+i].buyerID%></td>
+                       <td class="col-1"><%= items['item'+i].name%></td>
+                       <td class="col-2"><%= items['item'+i].email%></td>
+                       <td class="col-3"><%= items['item'+i].address%></td>
+                       <td class="col-1"><%= items['item'+i].national%></td>
+                       <td class="col-1"><%= items['item'+i].CN%></td>
+                       <td class="col-3"><%= items['item'+i].CA%></td>
+                       <td></td>
+                     </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="overlay"></div>
+    <script src="/JS/navShrink.js"></script>
+  </body>
+</html>
