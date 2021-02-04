@@ -3,9 +3,13 @@ module.exports = function(app,db){
     const router = express.Router();
     const ad_ReqEnroll = require('./ad_RequestEnroll');
     const ad_ReqBuy = require('./ad_RequestBuy');
+    const ad_ContractInfo = require('./ad_ContractInfo');
+
     router.get('/RequestEnroll',function(req,res,next){
         var items = ad_ReqEnroll.RequestForEnroll(req,res,app,db);
-        res.render('User/Admin/ad_RequestEnroll',{'app':app,'session':req.session,'db':db,'items':JSON.parse(items)});
+        console.log(items);
+        items = JSON.parse(items);
+        res.render('User/Admin/ad_RequestEnroll',{'app':app,'session':req.session,'db':db,'items':items});
     });
     router.post('/RequestEnroll',function(req,res,next){
         ad_ReqEnroll.withAnswer(req,res,app,db);
@@ -14,6 +18,11 @@ module.exports = function(app,db){
         var items = ad_ReqBuy.RequestForBuy(req,res,app,db);
         items = JSON.parse(items);
         res.render('User/Admin/ad_RequestBuy',{'app':app,'session':req.session,'db':db,'items':items});
+    });
+    router.get('/ContractInfo',function(req,res,next){
+        var items = ad_ContractInfo.showContarctInfo(req,res,app,db);
+        items = JSON.parse(items);
+        res.render('User/Admin/ad_ContractInfo',{'app':app,'session':req.session,'db':db,'items':items});
     });
     router.post('/RequestBuy/Ans',function(req,res,next){
         ad_ReqBuy.withAnswer(req,res,app,db);
