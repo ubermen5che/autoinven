@@ -1,5 +1,7 @@
 exports.edit = function (req, res,app,db) {
-    var password = req.body.password;
+    const crypto = require('crypto');
+
+    var password = crypto.createHash('sha512').update(req.body.password).digest('base64');
     var email = req.body.email;
     var contactNumber = req.body.contactNumber;
     var address = req.body.address;
