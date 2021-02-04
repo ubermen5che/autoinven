@@ -1,9 +1,15 @@
 exports.login = function (req, res,app,db) {
+    const crypto = require('crypto');
+    console.log('req.body.memberID :' + req.body.memberID);
+    console.log('req.body.password :' + req.body.password);
     var memberID = req.body.memberID;
     var password = req.body.password;
     let results = db.query('SELECT * FROM Member WHERE memberID = ?', [memberID]);
+    //console.log(results[0].password);
+    //console.log(crypto.createHash('sha512').update(password).digest('base64'));
     if(results.length > 0) {
-        if(results[0].password == password) {
+        if(results[0].password == crypto.createHash('sha512').update(password).digest('base64')) {
+            console.log('match password');
             req.session['memberID'] = results[0].memberID;
             req.session['type'] =  results[0].type;
             req.session['username'] = results[0].name;
@@ -16,11 +22,11 @@ exports.login = function (req, res,app,db) {
             req.session['CN'] = results[0].CN;
             req.session['CA'] = results[0].CA;
             req.session['CCN'] = results[0].CCN;
-            res.redirect('/');
+            res.send('loginSuccess');
         } else {
-            res.redirect('/User/Login');
+            res.send('loginError02'); //PW가 틀릴 시
         }
     } else {
-        res.redirect('/User/Login');
+        res.send('loginError01'); //DB에 해당하는 ID가 없을 시
     }
 }
