@@ -14,10 +14,8 @@
           </div>
         </div>
       </div>
-      <div class="container">
-
-        <div class="container mb-3">
-          <h2 class="mb-3">Submit lists</h2>
+     <div>
+       <div class="container mb-3">
           <p id = "totalMoney" style="display: none">0</p>
           <p id = "payFlag" style="display: none">F</p>
           <% for(var i=0; i < Object.keys(items).length; i++) { %>
@@ -26,13 +24,17 @@
             <p id = "reqType<%=i%>" style="display: none"><%= items['item'+i].reqType%></p>
             <p id = "buyerID<%=i%>" style="display: none"><%= items['item'+i].buyerID%></p>
             <p id = "area<%=i%>" style="display: none"><%= items['item'+i].area%></p>
+            <p id = "startDate<%=i%>" style="display: none"><%= items['item'+i].startDate%></p>
+            <p id = "endDate<%=i%>" style="display: none"><%= items['item'+i].endDate%></p>
           <%}%>
           <table id = "t1" class="board-table table">
+            <p style="font-size:30px">Submit Lists</p>
             <thead class="thead-dark">
               <tr>
                 <th>warehouseID</th>
                 <th>Status</th>
-                <th>Total amount</th>
+                <th>Total amount($)</th>
+                <th>period</th>
                 <th></th>
               </tr>
             </thead>
@@ -40,51 +42,52 @@
               <% for(var i=0; i < Object.keys(items).length; i++) { %>
                 <% if(items['item'+i].reqType == "ReqByBuyer" || items['item'+i].reqType == "ReqByAdmin"){ %>
                   <tr class="table-warning">
-                   <td><%= items['item'+i].warehouseID %></td>
+                    <td><%= items['item'+i].warehouseID %></td>
                     <td>Pending approval</td>
-                    <td id = "amounts<%=i%>" ><%= items['item'+i].amounts%></td>
+                    <td><%= items['item'+i].amounts%></td>
+                    <td><%= items['item'+i].startDate%> ~ <%= items['item'+i].endDate%></td>
                     <td style="float:right; padding:0px 10px 0px 0px;">
                      <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 0)">Cancel</button>
                     </td>
                   </tr>
              <% } %>
-<!--             <% if(items['item'+i].reqType == "ReqPayAcpt"){ %>
-             <table class = "border-table table ">
-               <thead class="thead-dark">
-                       <tr class="table-success">
-                         <th>warehouseID</th>
-                         <th>status</th>
-                       </tr>
-               </thead>
+            <% if(items['item'+i].reqType == "ReqPayAcpt"){ %>
                <tbody>
                         <tr class="table-success">
                           <td><%= items['item'+i].warehouseID %></td>
                           <td>Approved</td>
+                          <td><%= items['item'+i].amounts%></td>
+                          <td><%= items['item'+i].startDate%> ~ <%= items['item'+i].endDate%></td>
+                          <td></td>
                         </tr>
                </tbody>
-             </table>
              <% } %>
-             <table>
-               <% if(items['item'+i].reqType == "Rejected"){ %>
+            <% if(items['item'+i].reqType == "Rejected"){ %>
+              <tbody>
                  <tr class="table-danger">
                   <td><%= items['item'+i].warehouseID %></td>
                    <td>Rejected</td>
+                   <td><%= items['item'+i].amounts%></td>
+                   <td><%= items['item'+i].startDate%> ~ <%= items['item'+i].endDate%></td>                  
                    <td style="float:right; padding:0px 10px 0px 0px;">
                     <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 2)">Confirm</button>
                    </td>
                  </tr>
-               <% } %> -->
-             <% } %>
-             </table>
+               <% } %>
              </tbody>
-           </table>
+             <% } %>
+        </div>
+        
+        <div class="container mb-4">
           <table id = "t2" class="board-table table">
+           <p style="font-size:30px">Payment Lists</p>
            <thead class="thead-dark">
             <tr>
               <th>Check list</th>
               <th>warehouseID</th>
               <th>status</th>
               <th>Total amounts</th>
+              <th>period</th>
               <th></th>
             </tr>
            </thead>
@@ -94,7 +97,7 @@
                  <script>
                      document.getElementById('payFlag').innerText = 'T';
                  </script>
-                 <p id = "count" style="display: none"><%=i%></p>
+                 <p id = "count<%=i%>" style="display: none"><%=i%></p>
                  <p id = "reqType<%=i%>" style="display: none"><%= items['item'+i].reqType%></p>
                  <tr class="table-primary">
                   <td>
@@ -103,6 +106,7 @@
                   <td><%= items['item'+i].warehouseID %></td>
                   <td>Waiting for payment</td>
                   <td id = "amounts<%=i%>" ><%= items['item'+i].amounts%></td>
+                  <td><%= items['item'+i].startDate%> ~ <%= items['item'+i].endDate%></td>   
                   <td style="float:right; padding:0px 7px 0px 0px;">
                     <!-- <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 1)">Pay</button> -->
                     <button type="button" class="btn btn-sm" onclick="byClick(<%=i%>, 0)">Cancel</button>
@@ -112,6 +116,8 @@
             <% } %>
            </tbody>
           </table>
+        </div>
+      </div>
               <div id="smart-button-container">
               <div style="text-align: center;">
                 <div id="paypal-button-container"></div>
@@ -120,13 +126,14 @@
           </div>
         </div>
       <div class="overlay"></div>
+      <script src="/JS/navShrink.js"></script>
       <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
       <script>
         function byClick(i, flag) {
           switch (flag) {
             case 0: // Cancel
               $.ajax({
-                url: '/MyWarehouse/Buy/Ans',
+                url: '/Buyer/MyWarehouse/Buy/Ans',
                 dataType: 'json',
                 type: 'POST',
                 data: {answer: "Cancel",
@@ -159,7 +166,9 @@
                       whID: document.getElementById('whID'+i).innerText,
                       reqType: document.getElementById('reqType'+i).innerText,
                       buyerID: document.getElementById('buyerID'+i).innerText,
-                      area: document.getElementById('area'+i).innerText
+                      area: document.getElementById('area'+i).innerText,
+                      startDate: document.getElementById('startDate'+i).innerText,
+                      endDate: document.getElementById('endDate'+i).innerText
                       //other things will be here
                     },
                     success:function(data){
@@ -246,7 +255,11 @@
 
                 onApprove: function(data,actions){
                   return actions.order.capture().then(function(details){
-                    byClick(document.getElementById('count').innerText, 1)
+                    var index = makeIndex();
+
+                    for(var i = 0; i < index.length; i++){
+                      byClick(Number(index[i]), 1);
+                    }
                   });
                 }
             }).render('#paypal-button-container');
@@ -257,8 +270,8 @@
            let result = 0;
            if(event.target.checked){
              result = event.target.value;
-             result *= 1;
-             console.log(result);
+             result *= 1;                       //형변환
+             console.log(makeIndex());
            }
            else{
              result -= event.target.value;
@@ -267,8 +280,71 @@
            var a = document.getElementById('totalMoney').innerText;
            a *= 1;
            document.getElementById('totalMoney').innerText = (result + a);
-           alert(document.getElementById('totalMoney').innerText);
        }
+    </script>
+    <script>
+      function countNumofElement(){
+        var payByBuyerCount = 0;
+        var otherCount = 0;
+        var result = 1;
+        var i = 0;
+        var index = []; 
+
+        while(result != null){
+          result = document.getElementById('count' + i);
+          if(result == null){
+            continue;
+          }
+          else{
+            index.push(result.innerText);
+          }
+          i++;
+        }
+        return payByBuyerCount, otherCount;
+      }
+    </script>
+    <script>
+      function countNumofElement(){
+        var count = 0;
+        var i = 0;
+        result = 1;
+
+        while(result != null){
+          result = document.getElementById('reqType' + i);
+          if(result == null){
+            break;
+          }
+          else{
+            count++;
+          }
+          i++;
+        }
+        return count;
+      }
+    </script>
+    <script>
+      function makeIndex(){
+        var result = 1;
+        var i = 0;
+        var index = []; 
+        var limit = countNumofElement();
+
+        console.log(limit);
+
+        for(var i = 0; i < limit; i++){
+          result = document.getElementById('count' + i);
+          console.log(result);
+          console.log(i);
+
+          if(result == null){
+            continue;
+          }
+          else{
+            index.push(result.innerText);
+          }
+        }
+        return index;
+      }
     </script>
   </body>
 </html>
