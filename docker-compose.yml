@@ -13,9 +13,9 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=autoin102030$
+      - MYSQL_ROOT_PASSWORD=autoin102030
       - MYSQL_USER=autoin
-      - MYSQL_PASSWORD=autoin102030
+      - MYSQL_PASSWORD=autoin2021
       - MYSQL_DATABASE=autoinven
   nodejs:
     environment:
