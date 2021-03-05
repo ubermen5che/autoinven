@@ -6,7 +6,7 @@ exports.login = function (req, res,app,db) {
     var password = req.body.password;
     let results = db.query('SELECT * FROM Member WHERE memberID = ?', [memberID]);
     //console.log(results[0].password);
-    //console.log(crypto.createHash('sha512').update(password).digest('base64'));
+    console.log(crypto.createHash('sha512').update(password).digest('base64'));
     if(results.length > 0) {
         if(results[0].password == crypto.createHash('sha512').update(password).digest('base64')) {
             console.log('match password');
